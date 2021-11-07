@@ -1,8 +1,5 @@
-using System;
 using Xunit;
 using Test;
-using System.Linq;
-using System.Collections.Generic;
 
 /// <summary>
 /// WordCountAnalyzer:

@@ -1,37 +1,10 @@
-using System.Text.RegularExpressions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
+using System.Text.RegularExpressions;
 
 namespace Test
 {
-    public interface IWordCount
-    {
-        string Word { get; }
-        int Count { get; }
-    } 
-
-    public class WordCount : IWordCount
-    {
-        public WordCount(string word, int count) 
-        {
-            Word = word;
-            Count = count;
-        }
-
-        public string Word { get; }
-        public int Count { get; }
-    }
-
-    public interface IWordCountAnalyzer
-    {
-        int CalculateHighestWordCount(string text);
-
-        int CalculateWordCount(string text, string word);
-
-        IList<IWordCount> GetMostCountedWords(string text, int top);
-    }
-
     public class WordCountAnalyzer : IWordCountAnalyzer
     {
         public int CalculateHighestWordCount(string text)
@@ -41,7 +14,6 @@ namespace Test
 
             return wordCount.FirstOrDefault().Value;
         }
-
 
         public int CalculateWordCount(string text, string word)
         {   
@@ -89,7 +61,7 @@ namespace Test
             
             return wordCount;
         }
-        
+
         private IOrderedEnumerable<KeyValuePair<string, int>> GetWordCountSorted(Dictionary<string, int> wordCountDictionary) 
         {
             return wordCountDictionary.OrderByDescending(x => x.Value)

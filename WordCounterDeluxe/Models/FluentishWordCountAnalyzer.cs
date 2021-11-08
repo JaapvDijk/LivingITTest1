@@ -7,11 +7,11 @@ namespace Test
 {
     public interface IFluentWordCounter
     {
-        IDataPrep Set_words(string text);
+        IDataPrep SetWords(string text);
     }
     public interface IDataPrep
     {
-        ISetWordCount SetWord_countDictionary();
+        ISetWordCount SetWordCountDictionary();
     }
     public interface ISetWordCount : ISortAble
     {
@@ -27,9 +27,9 @@ namespace Test
     public class FluentishWordCountAnalyzer : IFluentWordCounter, IDataPrep, ISetWordCount, ISortAble
     {   
         private string[] _words;
-        private Dictionary<string, int> _countDictionary;
+        private Dictionary<string, int> _countDictionary = new Dictionary<string, int>();
 
-        public IDataPrep Set_words(string text)
+        public IDataPrep SetWords(string text)
         {
             text = text.ToLower();
             text = Regex.Replace(text, @"[^a-z ]+", "");
@@ -42,10 +42,8 @@ namespace Test
             return this;
         }
 
-        public ISetWordCount SetWord_countDictionary() 
+        public ISetWordCount SetWordCountDictionary() 
         {
-            _countDictionary = new Dictionary<string, int>();
-
             foreach(string word in _words) 
             {
                 if(_countDictionary.ContainsKey(word)) 

@@ -5,69 +5,65 @@ using System;
 
 namespace Test
 {
-    public interface ISetWords : IBeforeSetDictionary {}
-    public interface ISetDictonary : IBeforeSort {}
-    public interface ISort : IBeforeStat {}
-
-    public interface IBeforeSetwords
+    public interface IFluentWordCounter
     {
-        ISetWords SetWords();
+        IDataPrep Set_words(string text);
     }
-    public interface IBeforeSetDictionary
+    public interface IDataPrep
     {
-        ISetDictonary SetWordCountDictionary();
+        ISetWordCount SetWord_countDictionary();
     }
-    public interface IBeforeSort : IBeforeStat
+    public interface ISetWordCount : ISortAble
     {
-        ISort SortByValueThenKey();
+        ISortAble SortByValueThenKey();
     }
-    public interface IBeforeStat 
+    public interface ISortAble 
     {
         int GetFirstWordCount();
         IList<IWordCount> TakeTop(int top);
         int GetWordCount(string word);
     }
 
-    public class FluentishWordCountAnalyzer : ISetWords, ISetDictonary, ISort
+    public class FluentishWordCountAnalyzer : IFluentWordCounter, IDataPrep, ISetWordCount, ISortAble
     {   
-        private string[] words;
-        private Dictionary<string, int> countDictionary;
-        
-        public ISetWords SetWords(string text)
+        private string[] _words;
+        private Dictionary<string, int> _countDictionary;
+
+        public IDataPrep Set_words(string text)
         {
             text = text.ToLower();
             text = Regex.Replace(text, @"[^a-z ]+", "");
 
-            string[] words = text.Split(new char[] {'.', ',', ' ', '\n'}, 
+            string[] _words = text.Split(new char[] {'.', ',', ' ', '\n'}, 
                               StringSplitOptions.RemoveEmptyEntries);
 
-            this.words = words;
+            this._words = _words;
 
             return this;
         }
 
-        public ISetDictonary SetWordCountDictionary() 
+        public ISetWordCount SetWord_countDictionary() 
         {
-            countDictionary = new Dictionary<string, int>();
+            _countDictionary = new Dictionary<string, int>();
 
-            foreach(string word in words) 
+            foreach(string word in _words) 
             {
-                if(countDictionary.ContainsKey(word)) 
+                if(_countDictionary.ContainsKey(word)) 
                 {
-                    countDictionary[word] += 1;
+                    _countDictionary[word] += 1;
                 }
                 else
                 {
-                    countDictionary[word] = 1;
+                    _countDictionary[word] = 1;
                 }
             }
             
             return this;
         }
 
-        public ISort SortByValueThenKey() 
+        public ISortAble SortByValueThenKey() 
         {   
-            countDictionary = countDictionary.OrderByDescending(x => x.Value)
+            _countDictionary = _countDictionary.OrderByDescending(x => x.Value)
                                              .ThenBy(x => x.Key)
                                              .ToDictionary(x => x.Key, x => x.Value);
             
@@ -76,22 +72,22 @@ namespace Test
 
         public int GetFirstWordCount()
         {
-            return countDictionary.FirstOrDefault().Value;
+            return _countDictionary.FirstOrDefault().Value;
         }
 
         public int GetWordCount(string word)
         {
-            if (!countDictionary.ContainsKey(word)) 
+            if (!_countDictionary.ContainsKey(word)) 
             {
                 return -1;
             }
 
-            return countDictionary[word]; 
+            return _countDictionary[word]; 
         }
         
         public IList<IWordCount> TakeTop(int top)
         {
-            return countDictionary.Take(top)
+            return _countDictionary.Take(top)
                                   .Select(x => new WordCount(x.Key, x.Value))
                                   .ToList<IWordCount>();
         }

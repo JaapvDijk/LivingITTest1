@@ -5,6 +5,7 @@ using System;
 
 namespace Test
 {
+    //The interfaces enforce a particular order when using the FluentishWordCountAnalyzer methods.
     public interface IFluentWordCounter
     {
         IDataPrep SetWords(string text);
@@ -25,7 +26,7 @@ namespace Test
     }
 
     public class FluentishWordCountAnalyzer : IFluentWordCounter, IDataPrep, ISetWordCount, ISortAble
-    {   
+    {
         private string[] _words;
         private Dictionary<string, int> _countDictionary = new Dictionary<string, int>();
 
